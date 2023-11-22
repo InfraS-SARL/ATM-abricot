@@ -3,6 +3,8 @@ All notable changes to this project will be documented in this file.
 ___
 
 # NOT RELEASED
+
+- FIX : Dolibarr 19 common object signature - *22/11/2023* - 3.6.1
 - NEW : script de pré-configuration (initialisation / remplacement de certaines const) lors des installs / montées de version - *19/10/2023* - 3.6.0
 
 

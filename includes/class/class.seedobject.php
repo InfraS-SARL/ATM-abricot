@@ -25,9 +25,47 @@
 
 require_once DOL_DOCUMENT_ROOT.'/core/class/commonobject.class.php';
 
+
+if ((float) DOL_VERSION < 19){
+	class SeedObjectDolibarrCompat19 extends CommonObject{
+
+		/**
+		 * La signature de la methode à changer en V19 de Dolibarr
+		 * Load object in memory from the database
+		 *
+		 * @param int    $id   		Id object
+		 * @param string $ref  		Ref
+		 * @param string $morewhere	Ref
+		 * @return int         <0 if KO, 0 if not found, >0 if OK
+		 */
+		public function fetchCommon($id, $ref = null, $morewhere='')
+		{
+			return static::fetchCommonRetroCompat19($id, $ref, $morewhere);
+		}
+	}
+}
+else{
+	class SeedObjectDolibarrCompat19 extends CommonObject{
+		/**
+		 * La signature de la methode à changer en V19 de Dolibarr
+		 * Load object in memory from the database
+		 *
+		 * @param int    $id   		Id object
+		 * @param string $ref  		Ref
+		 * @param string $morewhere	Ref
+		 * @return int         <0 if KO, 0 if not found, >0 if OK
+		 */
+		public function fetchCommon($id, $ref = null, $morewhere='', $noextrafields = 0)
+		{
+			return static::fetchCommonRetroCompat19($id, $ref, $morewhere);
+		}
+	}
+}
+
+
 if ((float) DOL_VERSION < 7.0)
 {
-	class SeedObjectDolibarr extends CommonObject
+	class SeedObjectDolibarrCompat07 extends SeedObjectDolibarrCompat19
 	{
 		/**
 		* Function test if type is date
@@ -268,11 +306,10 @@ if ((float) DOL_VERSION < 7.0)
 			else return "'".$this->db->escape($value)."'";
 		}
 	}
-
 }
 else
 {
-	class SeedObjectDolibarr extends CommonObject
+	class SeedObjectDolibarrCompat07 extends SeedObjectDolibarrCompat19
 	{
 		/**
 		* Function test if type is date
@@ -510,7 +547,10 @@ else
 }
 
 
-class SeedObject extends SeedObjectDolibarr
+
+
+
+class SeedObject extends SeedObjectDolibarrCompat07
 {
 
 	public $withChild = true;
@@ -1150,7 +1190,7 @@ class SeedObject extends SeedObjectDolibarr
 	 * @param string $morewhere	Ref
 	 * @return int         <0 if KO, 0 if not found, >0 if OK
 	 */
-	public function fetchCommon($id, $ref = null, $morewhere='')
+	public function fetchCommonRetroCompat19($id, $ref = null, $morewhere='', $noextrafields = 0)
 	{
 		// method_exists() with key word 'parent' doesn't work
 		if (is_callable('parent::fetchCommon')) return parent::fetchCommon($id, $ref, $morewhere);
